@@ -18,6 +18,12 @@
       "sourceType": "github",
       "skillPath": "skills/rspress-docs-generator/SKILL.md",
       "computedHash": "ac15a47048425a68fc671cf3754eef2b857e41db08354d09deb98f3bed1d6a1d"
+    },
+    "ui-ux-pro-max": {
+      "source": "nextlevelbuilder/ui-ux-pro-max-skill",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/ui-ux-pro-max/SKILL.md",
+      "computedHash": "4080ff883b26b670a5a224fb332e89ecc15319535f4d14279947ad7812fec558"
     }
   }
 }
