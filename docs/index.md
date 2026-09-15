@@ -1,4 +1,0 @@
----
-pageType: home
-navbar: false
----

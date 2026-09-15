@@ -10,6 +10,13 @@ export default defineConfig({
   icon: '/rspress-icon.png',
   lang: 'zh',
   themeConfig: {
+    socialLinks: [
+      {
+        icon: 'github',
+        mode: 'link',
+        content: 'https://github.com/heyq02',
+      },
+    ],
     enableContentAnimation: true,
     enableAppearanceAnimation: true,
   },
