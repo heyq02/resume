@@ -1,0 +1,95 @@
+---
+description: 'Create custom containers with ::: syntax or GitHub Markdown Alerts for tip, warning, danger, note, and details blocks.'
+---
+
+# Container
+
+Containers are a great way to mark important information and provide hints to users.
+
+:::tip
+Rspress provides two styles of syntax, [`:::` syntax](#three-colon-syntax) and [GitHub Markdown Alerts syntax](#github-markdown-alerts-syntax).
+:::
+
+## `:::` Syntax \{#three-colon-syntax}
+
+You can use the `:::` syntax to create custom containers and support custom titles. For example:
+
+import ContainerSyntax from '../../fragments/container-syntax.mdx';
+
+<ContainerSyntax />
+
+:::warning Notes
+
+- Container types must be lowercase. Use `:::tip`, `:::warning`, `:::caution`, etc. Capitalized types like `:::Tip` or `:::Warning` will not be recognized.
+
+- When using the `:::` syntax in `.mdx` files and customizing headings with curly braces syntax, remember to escape the braces. We therefore recommend using the syntax `:::tip Custom Title` directly.
+
+```mdx
+:::tip\{title="Custom Title"}
+This is a `block` of `Custom Title`
+:::
+```
+
+:::
+
+## GitHub Markdown alerts syntax \{#github-markdown-alerts-syntax}
+
+You can use [GitHub Markdown Alerts Syntax](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#alerts) to create custom containers.
+
+import { Tabs, Tab } from '@rspress/core/theme';
+
+<Tabs>
+
+<Tab label="Rendered Result">
+
+> [!NOTE]
+> This is a `block` of type `note`
+
+> [!TIP]
+> This is a `block` of type `tip`
+
+> [!IMPORTANT]
+> This is a `block` of type `important`
+
+> [!INFO]
+> This is a `block` of type `info`
+
+> [!WARNING]
+> This is a `block` of type `warning`
+
+> [!DANGER]
+> This is a `block` of type `danger`
+
+> [!DETAILS]
+> This is a `block` of type `details`
+
+</Tab>
+
+<Tab label="Syntax">
+
+```markdown
+> [!NOTE]
+> This is a `block` of type `note`
+
+> [!TIP]
+> This is a `block` of type `tip`
+
+> [!IMPORTANT]
+> This is a `block` of type `important`
+
+> [!INFO]
+> This is a `block` of type `info`
+
+> [!WARNING]
+> This is a `block` of type `warning`
+
+> [!DANGER]
+> This is a `block` of type `danger`
+
+> [!DETAILS]
+> This is a `block` of type `details`
+```
+
+</Tab>
+
+</Tabs>

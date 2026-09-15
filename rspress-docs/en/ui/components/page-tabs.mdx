@@ -1,0 +1,80 @@
+---
+description: PageTabs component for creating multiple sub-tabs within a single page.
+tag: experimental
+overviewHeaders: []
+---
+
+import { PageTabs, PageTab, Tag } from '@rspress/core/theme';
+
+# PageTabs
+
+:::info
+
+The PageTabs component creates sub-tabs within a page so a single page can be split into multiple views. To keep anchors and the TOC correct, each page may contain exactly one PageTabs.
+
+:::
+
+<PageTabs>
+
+<PageTab label="API">
+
+## Basic usage
+
+```mdx title="docs/guide/getting-started.mdx"
+# Getting started
+
+import { PageTabs, PageTab } from '@rspress/core/theme';
+
+<PageTabs>
+<PageTab label="PageTab 1">
+
+## Foo
+
+</PageTab>
+
+<PageTab label="PageTab 2">
+
+## Bar
+
+</PageTab>
+</PageTabs>
+```
+
+## Using MDX fragments
+
+We recommend using [MDX fragments](../../guide/use-mdx/components.mdx) to split a page into multiple sub-pages.
+
+```mdx title="docs/guide/getting-started.mdx"
+# Getting started
+
+import { PageTabs, PageTab } from '@rspress/core/theme';
+import Foo from './fragments/_foo.mdx';
+import Bar from './fragments/_bar.mdx';
+
+<PageTabs>
+  <PageTab label="PageTab 1">
+    <Foo />
+  </PageTab>
+  <PageTab label="PageTab 2">
+    <Bar />
+  </PageTab>
+</PageTabs>
+```
+
+</PageTab>
+
+<PageTab label="How it works">
+
+## Dynamic TOC
+
+Based on extensive feedback from V1 users, we found that static TOC extraction often failed when using [MDX fragments](../../guide/use-mdx/components.mdx) that include headers.
+
+Rspress V2 introduces Dynamic TOC, which generates the TOC at runtime by monitoring DOM changes through [MutationObserver](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver). This keeps the TOC accurate while letting you fully leverage [MDX fragments](../../guide/use-mdx/components.mdx), making the `<PageTabs />` component possible.
+
+```ts
+import { useDynamicTOC } from '@rspress/core/theme';
+```
+
+</PageTab>
+
+</PageTabs>

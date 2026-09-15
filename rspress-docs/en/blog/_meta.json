@@ -1,0 +1,14 @@
+[
+  {
+    "type": "section-header",
+    "label": "Overview"
+  },
+  "index",
+  {
+    "type": "section-header",
+    "label": "Blogs"
+  },
+  "agent-friendly-website",
+  "trailing-slash",
+  "rspress-v2"
+]

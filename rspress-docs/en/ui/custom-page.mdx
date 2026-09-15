@@ -1,0 +1,102 @@
+---
+description: Methods for customizing page layout, global components, styles, and head tags.
+---
+
+# Customizing page
+
+Rspress provides several ways to customize page content:
+
+- Adding custom global components.
+- Adding custom global styles.
+- Customizing page layout structure.
+
+## Custom global components
+
+In some scenarios, you may need custom global components on every page. Use the `globalUIComponents` option for this.
+
+### How to use
+
+Add the following configuration in `rspress.config.ts`:
+
+```ts title="rspress.config.ts"
+import { defineConfig } from '@rspress/core';
+import path from 'path';
+
+export default defineConfig({
+  globalUIComponents: [path.join(__dirname, 'components', 'MyComponent.tsx')],
+});
+```
+
+Each `globalUIComponents` item can be either a component file path string or a tuple. In the tuple form, the first item is the component file path and the second item is the component props. For example:
+
+```ts title="rspress.config.ts"
+import { defineConfig } from '@rspress/core';
+
+export default defineConfig({
+  globalUIComponents: [
+    [
+      path.join(__dirname, 'components', 'MyComponent.tsx'),
+      {
+        foo: 'bar',
+      },
+    ],
+  ],
+});
+```
+
+import GlobalUIComponents from '@en/fragments/global-ui-components.mdx';
+
+<GlobalUIComponents />
+
+## Custom layout structure
+
+Rspress provides `pageType` for customizing page layout.
+
+### Using pageType
+
+Rspress convention-based routing supports two route types: document routes, written with `.md(x)` files, and component routes, written with `.jsx` or `.tsx` files.
+
+For document routes, add the `pageType` field in frontmatter to specify the page layout:
+
+```mdx title="foo.mdx"
+---
+pageType: custom
+---
+```
+
+For component routes, export `frontmatter` to specify `pageType`:
+
+```tsx title="foo.tsx"
+export const frontmatter = {
+  // Declare layout type
+  pageType: 'custom',
+};
+```
+
+`pageType` supports the following values:
+
+import PageType from '@en/fragments/page-type.mdx';
+
+<PageType />
+
+### Using fine-grained switches
+
+In addition to page-level `pageType` configuration, Rspress provides fine-grained frontmatter switches:
+
+- `navbar`: Whether to display the top navbar. Set it to `false` to hide the navbar.
+- `sidebar`: Whether to display the sidebar. Set it to `false` to hide the sidebar.
+- `outline`: Whether to display the outline. Set it to `false` to hide the outline.
+- `footer`: Whether to display the footer. Set it to `false` to hide the footer.
+- `globalComponents`: Whether to display global components. Set it to `false` to hide global components.
+
+Example:
+
+```mdx title="foo.mdx"
+---
+navbar: false
+sidebar: false
+outline: false
+footer: false
+globalUIComponents: false
+---
+```

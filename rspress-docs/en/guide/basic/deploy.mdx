@@ -1,0 +1,218 @@
+---
+description: Deploy Rspress sites with production build, static resource prefix, base path configuration, and platform-specific guides for GitHub Pages, Netlify, and Vercel.
+---
+
+# Deployment
+
+This page explains how to deploy a Rspress project after development is complete. Deployment usually involves:
+
+- Building and previewing the production output.
+- Configuring the static asset prefix.
+- Configuring the project base path.
+- Choosing a deployment platform.
+
+## Build and preview
+
+Before deployment, build the project for production and preview it locally to make sure it works. In Rspress projects, use the following `scripts` commands:
+
+```json
+{
+  "scripts": {
+    "build": "rspress build",
+    "preview": "rspress preview"
+  }
+}
+```
+
+:::tip Tip
+
+For preview, specify the port with `--port`, for example `rspress preview --port 8080`.
+
+:::
+
+By default, the final output is written to the `doc_build` directory under the project root. Deploy the contents of this directory.
+
+## Static resource prefix configuration
+
+Deployment output can be divided into two parts: HTML files and static assets. HTML files are the page files in the output directory and are deployed to the server.
+
+Static assets live in the `static` directory in the output directory. This directory contains the JavaScript, CSS, images, and other assets required by the site. If you want to serve these assets from a CDN instead of the same server as the HTML files, configure the static asset prefix so the HTML references the CDN URLs correctly. Use `builderConfig.output.assetPrefix`:
+
+```ts title="rspress.config.ts"
+import { defineConfig } from '@rspress/core';
+
+export default defineConfig({
+  builderConfig: {
+    output: {
+      assetPrefix: 'https://cdn.com/',
+    },
+  },
+});
+```
+
+Then Rspress automatically prefixes static asset references in HTML:
+
+```html
+<script src="https://cdn.com/static/js/app.123.js"></script>
+```
+
+## Project base path configuration
+
+When deploying to a subpath, configure `base`. For example, if your site will be deployed to `https://foo.github.io/bar/`, set `base` to `"/bar/"`:
+
+```ts title="rspress.config.ts"
+import { defineConfig } from '@rspress/core';
+
+export default defineConfig({
+  base: '/bar/',
+});
+```
+
+For more details, see the [`base` config reference](/api/config/config-basic#base).
+
+## Deployment platforms
+
+After completing the configuration above, deploy the output to a hosting platform. Common choices include Zephyr, GitHub Pages, Netlify, Vercel, Kinsta, and Zeabur. The following sections show several examples.
+
+### Deploy with Zephyr Cloud
+
+[Zephyr Cloud](https://zephyr-cloud.io) is a zero-config deployment platform that integrates directly into your build process and provides global edge distribution.
+
+#### How to deploy
+
+Follow the steps in [zephyr-rspress-plugin](https://www.npmjs.com/package/zephyr-rspress-plugin).
+
+During the build process, your Rspress documentation site is deployed automatically and you receive a deployment URL.
+
+Zephyr Cloud handles asset optimization, global CDN distribution, and automatic rollback for documentation sites.
+
+### Deploy via GitHub actions
+
+If your project is hosted on GitHub, you can deploy with GitHub Pages. GitHub Pages is a static hosting service from GitHub, so you can deploy without running your own server.
+
+#### 1. Create workflow file
+
+Create `.github/workflows/deploy.yml` in the project root with the following content:
+
+```yml
+name: Deploy Rspress site to Pages
+
+on:
+  push:
+    branches: [main]
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  # Build job
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Not needed if lastUpdated is not enabled
+      - uses: pnpm/action-setup@v3 # pnpm is optional but recommended, you can also use npm / yarn
+        with:
+          version: 8
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Install dependencies
+        run: pnpm install
+      - name: Build with Rspress
+        run: |
+          pnpm run build
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: doc_build
+
+  # Deployment job
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
+    runs-on: ubuntu-latest
+    name: Deploy
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+```
+
+#### 2. Configure GitHub Actions
+
+In the repository settings, open the `Pages` section and choose `GitHub Actions` as the deployment source.
+
+#### 3. Push code to main branch
+
+When you push code to the `main` branch, GitHub Actions runs the deployment workflow automatically. You can view progress in the `Actions` tab. After deployment completes, access your site at `https://<username>.github.io/<repository>/`.
+
+### Deploy via Netlify
+
+Netlify is a web application deployment platform. You can deploy a Rspress site on Netlify without running your own server.
+
+#### Basic configuration
+
+To deploy on Netlify, import your GitHub repository and configure two fields:
+
+- `Build command`: The project build command, such as `npm run build`.
+- `Publish directory`: The output directory, usually `doc_build`.
+
+Then click `Deploy site` to deploy.
+
+#### Configure custom domain
+
+To bind a custom domain, configure it in Netlify's `Domain management` section. See the [Netlify official documentation](https://docs.netlify.com/domains-https/custom-domains/) for details.
+
+### Deploy to Kinsta static site hosting
+
+You can deploy your Rspress site on [Kinsta](https://kinsta.com/static-site-hosting/).
+
+1. Log in or create an account to view your [MyKinsta](https://my.kinsta.com/) dashboard.
+
+2. Authorize Kinsta with your Git provider.
+
+3. Select **Static Sites** from the left sidebar and press **Add sites**.
+
+4. Select the repository and branch you want to deploy.
+
+5. In build settings, Kinsta tries to fill in **Build command**, **Node version**, and **Publish directory** automatically. If it does not, use:
+   - Build command: `npm run build`
+   - Node version: `18.16.0`
+   - Publish directory: `doc_build`
+
+6. Click **Create site**.
+
+### Deploy to Zeabur
+
+[Zeabur](https://zeabur.com) is a platform for deploying services quickly. It can deploy a Rspress site without additional configuration.
+
+#### How to deploy
+
+First, [create a Zeabur account](https://zeabur.com). Then follow the instructions to create a project and install the GitHub app so Zeabur can access your Rspress repository.
+
+Click `Deploy New Service` and import your Rspress repository. Deployment starts automatically, and Zeabur recognizes that the site is built with Rspress.
+
+Deployment usually finishes within a minute. You can also bind a free Zeabur subdomain or your own domain to the site.
+
+## Troubleshooting
+
+### Page shows 404 after refresh
+
+If your site navigates normally but shows a 404 after refresh, see ["Page shows 404 after refresh"](/guide/basic/ssg#refresh-404) in the SSG documentation.

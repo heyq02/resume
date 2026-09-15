@@ -1,0 +1,583 @@
+---
+description: Use Shiki for syntax highlighting with support for line highlighting, code titles, line numbers, word highlighting, diff display, and code folding.
+---
+
+import { Tabs, Tab } from '@rspress/core/theme';
+
+# Code blocks
+
+Rspress uses [Shiki](https://shiki.style) for syntax highlighting at compile time, which means better runtime performance.
+
+When using code blocks in multiple languages, the corresponding language is automatically detected at compile time, and the runtime bundle size does not increase. For supported programming languages, refer to the [Shiki supported languages list](https://shiki.style/languages).
+
+## Basic usage
+
+You can use the \`\`\` syntax to create code blocks. For example:
+
+````mdx
+```js
+console.log('Hello World');
+```
+````
+
+It renders as:
+
+```js
+console.log('Hello World');
+```
+
+## Code block title
+
+You can use the `title="..."` attribute to add a title to a code block.
+
+````mdx
+```jsx title="src/components/HelloCodeBlockTitle.tsx"
+const HelloCodeBlockTitle = props => {
+  return <h1>Hello CodeBlock Title</h1>;
+};
+```
+````
+
+It renders as:
+
+```jsx title="src/components/HelloCodeBlockTitle.tsx"
+const HelloCodeBlockTitle = props => {
+  return <h1>Hello CodeBlock Title</h1>;
+};
+```
+
+## File code block \{#file-code-block}
+
+You can use the `file="./path/to/file"` attribute without writing any code block content to reference the text from an external file.
+
+### Relative paths
+
+Use relative paths starting with `./` or `../` to reference files relative to the current MDX file:
+
+<Tabs>
+<Tab label="foo.mdx">
+
+````mdx
+```tsx file="./_tsx-component.tsx"
+
+```
+````
+
+</Tab>
+<Tab label="_tsx-component.tsx">
+
+```tsx file="./_tsx-component.tsx"
+
+```
+
+</Tab>
+</Tabs>
+
+It renders as:
+
+```tsx file="./_tsx-component.tsx"
+
+```
+
+### Absolute paths with `/` prefix
+
+Use the `/` prefix to reference files using absolute paths relative to the docs directory. This is useful when you need to reference shared code files from different locations in your documentation:
+
+````mdx
+```tsx file="/components/Button.tsx"
+
+```
+````
+
+For example, if your docs directory is `/project/docs`, then `/components/Button.tsx` will resolve to `/project/docs/components/Button.tsx`.
+
+### Absolute paths with `<root>/` prefix
+
+Use the `<root>/` prefix to reference files using absolute paths relative to the project root directory. This is useful when you need to reference shared code files from different locations in your documentation:
+
+````mdx
+```tsx file="<root>/src/components/Button.tsx"
+
+```
+````
+
+For example, if your project root is `/project`, then `<root>/src/components/Button.tsx` will resolve to `/project/src/components/Button.tsx`.
+
+:::tip
+
+When using external file code blocks, it's common to use them together with [route conventions](./components.mdx#routing-convention). Name files starting with `_`.
+
+:::
+
+## Notation line highlight
+
+You can use [Shiki transformers](#shiki-transformers) with the `transformerNotationHighlight` and `// [!code highlight]` comments to highlight code lines.
+
+<Tabs>
+<Tab label="Code">
+
+````mdx
+```ts
+console.log('Highlighted'); // [\!code highlight]
+console.log('Not highlighted');
+// [\!code highlight:2]
+console.log('Highlighted');
+console.log('Highlighted');
+```
+````
+
+</Tab>
+<Tab label="rspress.config.ts">
+
+```ts
+import { defineConfig } from '@rspress/core';
+import { transformerNotationHighlight } from '@shikijs/transformers';
+
+export default defineConfig({
+  markdown: {
+    shiki: {
+      transformers: [transformerNotationHighlight()],
+    },
+  },
+});
+```
+
+</Tab>
+</Tabs>
+
+It renders as:
+
+```ts title="highlight.ts"
+console.log('Highlighted'); // [!code highlight]
+console.log('Not highlighted');
+// [!code highlight:2]
+console.log('Highlighted');
+console.log('Highlighted');
+```
+
+## Meta line highlight
+
+:::warning
+When using meta info for line highlighting, be aware that formatting tools may change line numbers. For maintainability, [Notation Line Highlight](#notation-line-highlight) is recommended.
+:::
+
+You can use `@rspress/core/shiki-transformers` with `transformerCompatibleMetaHighlight` and meta info comments to highlight code lines.
+
+<Tabs>
+<Tab label="Code">
+
+````mdx
+```ts {1,3-4}
+console.log('Highlighted');
+console.log('Not highlighted');
+console.log('Highlighted');
+console.log('Highlighted');
+```
+````
+
+</Tab>
+<Tab label="rspress.config.ts">
+
+```ts
+import { defineConfig } from '@rspress/core';
+import { transformerCompatibleMetaHighlight } from '@rspress/core/shiki-transformers';
+
+export default defineConfig({
+  markdown: {
+    shiki: {
+      transformers: [transformerCompatibleMetaHighlight()],
+    },
+  },
+});
+```
+
+</Tab>
+</Tabs>
+
+It renders as:
+
+```ts {1,3-4}
+console.log('Highlighted');
+console.log('Not highlighted');
+console.log('Highlighted');
+console.log('Highlighted');
+```
+
+## Show code line numbers
+
+You can show line numbers for individual code blocks using the `lineNumbers` meta attribute:
+
+````mdx
+```ts lineNumbers
+function hello() {
+  console.log('Line numbers enabled for this block');
+}
+```
+````
+
+It renders as:
+
+```ts lineNumbers
+function hello() {
+  console.log('Line numbers enabled for this block');
+}
+```
+
+You can also enable line numbers globally by setting the [`showLineNumbers`](/api/config/config-build#markdownshowlinenumbers) option in the config file:
+
+```ts title="rspress.config.ts"
+export default {
+  // ...
+  markdown: {
+    showLineNumbers: true,
+  },
+};
+```
+
+When `showLineNumbers` is enabled globally, all code blocks will show line numbers by default. You can disable line numbers for a specific code block by using `lineNumbers=false`:
+
+````mdx
+```ts lineNumbers=false
+function hello() {
+  console.log('Line numbers disabled for this block');
+}
+```
+````
+
+## Wrap code
+
+You can enable code wrapping for individual code blocks using the `wrapCode` meta attribute:
+
+{/* prettier-ignore */}
+````mdx
+```ts wrapCode
+const longLine = 'This is a very long line of code that will wrap when the wrapCode meta attribute is present';
+```
+````
+
+It renders as:
+
+{/* prettier-ignore */}
+```ts wrapCode
+const longLine = 'This is a very long line of code that will wrap when the wrapCode meta attribute is present';
+```
+
+You can also enable code wrapping globally by setting the [`defaultWrapCode`](/api/config/config-build#markdowndefaultwrapcode) option in the config file:
+
+```ts title="rspress.config.ts"
+export default {
+  // ...
+  markdown: {
+    defaultWrapCode: true,
+  },
+};
+```
+
+When `defaultWrapCode` is enabled globally, all code blocks will wrap long lines by default. You can disable code wrapping for a specific code block by using `wrapCode=false`:
+
+{/* prettier-ignore */}
+````mdx
+```ts wrapCode=false
+const longLine = 'This code block will not wrap even if defaultWrapCode is enabled globally';
+```
+````
+
+## Code block height
+
+You can control the height behavior of code blocks using the `height` and `fold` meta attributes. There are three cases:
+
+- **`fold`**: Collapsible code block with an expand button. Height defaults to 300px.
+- **`height=X`**: Fixed height with vertical scrollbar. If combined with `fold`, the code block will be collapsible at the specified height instead.
+- **No meta**: Fully expanded by default. You can change this globally via [`markdown.defaultCodeOverflow`](/api/config/config-build#markdowndefaultcodeoverflow).
+
+### Fold
+
+Use the `fold` attribute to enable expand/collapse functionality. You can also customize the collapsed height via the `height` attribute (in pixels, default 300):
+
+````mdx
+```tsx fold height="350"
+// Put longer code content here to trigger expand/collapse
+```
+````
+
+It renders as:
+
+```jsx title="fold-demo.tsx" fold height="350"
+import { useState } from 'react';
+
+export default () => {
+  const [count, setCount] = useState(0);
+  return (
+    <div>
+      <div>Line 1</div>
+      <div>Line 2</div>
+      <div>Line 3</div>
+      <div>Line 4</div>
+      <div>Line 5</div>
+      <div>Line 6</div>
+      <div>Line 7</div>
+      <div>Line 8</div>
+      <div>Line 9</div>
+      <div>Line 10</div>
+      <div>Line 11</div>
+      <div>Line 12</div>
+      <div>Line 13</div>
+      <div>Line 14</div>
+      <div>Line 15</div>
+      <div>Line 16</div>
+      <div>Line 17</div>
+      <div>Line 18</div>
+      <div>Line 19</div>
+      <div>Line 20</div>
+      <div>{count}</div>
+      <button onClick={() => setCount(c => c + 1)}>{count}</button>
+    </div>
+  );
+};
+```
+
+:::tip
+The expand/collapse button will not be shown when the actual content height is less than `height`.
+:::
+
+### Scroll
+
+Use the `height` attribute alone (without `fold`) to set a fixed height with a vertical scrollbar:
+
+````mdx
+```tsx height="200"
+// Put longer code content here to trigger scrolling
+```
+````
+
+It renders as:
+
+```tsx title="scroll-demo.tsx" height="200"
+const lines = Array.from({ length: 20 }, (_, index) => `Line ${index + 1}`);
+
+export default function ScrollDemo() {
+  return (
+    <div>
+      {lines.map(line => (
+        <div key={line}>{line}</div>
+      ))}
+    </div>
+  );
+}
+```
+
+## Combining meta attributes
+
+You can combine multiple meta attributes together:
+
+````mdx
+```ts lineNumbers wrapCode title="example.ts"
+const longLine = 'This code block has line numbers, code wrapping, and a title';
+```
+````
+
+It renders as:
+
+```ts lineNumbers wrapCode title="example.ts"
+const longLine = 'This code block has line numbers, code wrapping, and a title';
+```
+
+## Diff code block
+
+````mdx
+```diff
+function test() {
+- console.log('deleted');
++ console.log('added');
+  console.log('unchanged');
+}
+```
+````
+
+It renders as:
+
+```diff
+function test() {
+- console.log('deleted');
++ console.log('added');
+  console.log('unchanged');
+}
+```
+
+## Shiki transformers
+
+Rspress uses [Shiki](https://shiki.style) for compile-time code highlighting, providing flexible code block capabilities.
+
+You can add custom [shiki transformers](https://shiki.style/guide/transformers.html) via [`markdown.shiki.transformers`](../../api/config/config-build.mdx#markdownshiki) for richer code block effects.
+
+In addition to the [transformerNotationHighlight](#notation-line-highlight) mentioned above, Rspress defaults to supporting the following transformers from [@shikijs/transformers](https://shiki.style/packages/transformers).
+
+### transformerNotationDiff
+
+<Tabs>
+<Tab label="Syntax">
+
+````mdx
+```ts
+console.log('deleted'); // [\!code --]
+console.log('added'); // [\!code ++]
+console.log('unchanged');
+```
+````
+
+</Tab>
+<Tab label="rspress.config.ts">
+
+```ts
+import { defineConfig } from '@rspress/core';
+import { transformerNotationDiff } from '@shikijs/transformers';
+export default defineConfig({
+  markdown: {
+    shiki: {
+      transformers: [transformerNotationDiff()],
+    },
+  },
+});
+```
+
+</Tab>
+</Tabs>
+
+It renders as:
+
+```ts
+console.log('deleted'); // [!code --]
+console.log('added'); // [!code ++]
+console.log('unchanged');
+```
+
+### transformerNotationErrorLevel
+
+<Tabs>
+<Tab label="Syntax">
+
+````mdx
+```ts
+console.log('No errors or warnings');
+console.error('Error'); // [\!code error]
+console.warn('Warning'); // [\!code warning]
+```
+````
+
+</Tab>
+<Tab label="rspress.config.ts">
+
+```ts
+import { defineConfig } from '@rspress/core';
+import { transformerNotationErrorLevel } from '@shikijs/transformers';
+export default defineConfig({
+  markdown: {
+    shiki: {
+      transformers: [transformerNotationErrorLevel()],
+    },
+  },
+});
+```
+
+</Tab>
+</Tabs>
+
+It renders as:
+
+```ts
+console.log('No errors or warnings');
+console.error('Error'); // [!code error]
+console.warn('Warning'); // [!code warning]
+```
+
+### transformerNotationFocus
+
+<Tabs>
+<Tab label="Syntax">
+
+````mdx
+```ts
+console.log('Not focused');
+console.log('Focused'); // [\!code focus]
+console.log('Not focused');
+```
+````
+
+</Tab>
+<Tab label="rspress.config.ts">
+
+```ts
+import { defineConfig } from '@rspress/core';
+import { transformerNotationFocus } from '@shikijs/transformers';
+export default defineConfig({
+  markdown: {
+    shiki: {
+      transformers: [transformerNotationFocus()],
+    },
+  },
+});
+```
+
+</Tab>
+</Tabs>
+
+It renders as:
+
+```ts
+console.log('Not focused');
+console.log('Focused'); // [!code focus]
+console.log('Not focused');
+```
+
+## Twoslash
+
+> [Twoslash](https://twoslash.netlify.app/guide/) is a markup format for TypeScript code, suitable for creating self-contained code samples and letting the TypeScript compiler automatically supplement type information and hints. It is widely used on the official TypeScript website.
+
+Rspress provides the `@rspress/plugin-twoslash` plugin, which enables Twoslash features in Rspress. See [@rspress/plugin-twoslash documentation](../../plugin/official-plugins/twoslash.mdx) for details.
+
+```ts twoslash
+// @noErrorValidation
+const str: string = 1;
+```
+
+## Runtime syntax highlighting
+
+When you need to render code blocks dynamically at runtime, such as in interactive docs or fetching code remotely, Rspress provides the `CodeBlockRuntime` component.
+
+Here is an example:
+
+```mdx title="foo.mdx"
+import { CodeBlockRuntime } from '@rspress/core/theme';
+import { transformerNotationHighlight } from '@shikijs/transformers';
+
+<CodeBlockRuntime
+  lang="ts"
+  title="highlight.ts"
+  code={`console.log('Highlighted'); // [\!code highlight]
+// [\!code highlight:1]
+console.log('Highlighted');
+console.log('Not highlighted');`}
+  shikiOptions={{
+    transformers: [transformerNotationHighlight()],
+  }}
+/>
+```
+
+import { CodeBlockRuntime } from '@rspress/core/theme';
+import { transformerNotationHighlight } from '@shikijs/transformers';
+
+<CodeBlockRuntime
+  lang="ts"
+  title="highlight.ts"
+  code={`console.log('Highlighted'); // [!code highlight]
+// [!code highlight:1]
+console.log('Highlighted');
+console.log('Not highlighted');`}
+  shikiOptions={{
+    transformers: [transformerNotationHighlight()],
+  }}
+/>
+
+:::warning
+Use `CodeBlockRuntime` only when necessary. It increases runtime bundle size and cannot benefit from compile-time highlighting.
+:::

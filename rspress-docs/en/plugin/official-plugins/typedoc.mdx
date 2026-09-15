@@ -1,0 +1,112 @@
+# @rspress/plugin-typedoc <SourceCode href="https://github.com/web-infra-dev/rspress/tree/main/packages/plugin-typedoc" />
+
+import { SourceCode, PackageManagerTabs } from '@rspress/core/theme';
+
+Rspress plugin for integrating [TypeDoc](https://github.com/TypeStrong/typedoc) and automatically generating API documentation for TypeScript modules.
+
+## Installation
+
+<PackageManagerTabs command="add @rspress/plugin-typedoc -D" />
+
+## Usage
+
+```ts
+import { defineConfig } from '@rspress/core';
+import { pluginTypeDoc } from '@rspress/plugin-typedoc';
+import path from 'path';
+
+export default defineConfig({
+  plugins: [
+    pluginTypeDoc({
+      entryPoints: [
+        path.join(__dirname, 'src', 'foo.ts'),
+        path.join(__dirname, 'src', 'bar.ts'),
+      ],
+    }),
+  ],
+});
+```
+
+```ts title="src/foo.ts"
+/**
+ * This is an add function.
+ */
+export function add(
+  /**
+   * This is param1.
+   */
+  param1: string,
+  /**
+   * This is param2.
+   */
+  param2: number,
+) {
+  return 1;
+}
+```
+
+```ts title="src/bar.ts"
+/**
+ * This is a multi function.
+ */
+export function multi(
+  /**
+   * This is param1.
+   */
+  param1?: string,
+  /**
+   * This is param2.
+   */
+  param2?: number,
+) {
+  return 1;
+}
+```
+
+When you start or build the project, the plugin automatically generates an `api` directory in your docs root. The directory structure is:
+
+```tree
+api
+├── _meta.json
+├── index.md
+├── functions
+│   ├── bar.multi.md
+│   └── foo.add.md
+├── interfaces
+│   ├── foo.RunTestsOptions.md
+│   └── foo.TestMessage.md
+└── modules
+    ├── bar.md
+    └── foo.md
+```
+
+The plugin calls TypeDoc internally to generate API documentation for your modules, including module lists, interface details, and function details such as parameters, return values, and descriptions.
+
+Note that the `.md` documentation files are regenerated every time you start the project to reflect the latest module content. Therefore, we recommend adding the `.md` files in the `api` directory to `.gitignore`, for example `docs/api/**/*.md`. If you customize the output directory with the `outDir` parameter below, you should also add the corresponding `.md` files to `.gitignore`.
+
+The `_meta.json` file is only automatically generated on the first run and will not be overwritten afterwards. This means you can manually edit it to customize the sidebar structure (e.g., add dividers, adjust order, etc.) and commit it to git.
+
+Do not modify the generated `.md` documents in the `api` directory, because they are overwritten each time the project starts to reflect module content changes.
+
+## Options
+
+### entryPoints
+
+- **Type**: `string[]`
+- **Default**: `[]`
+
+Specifies the absolute paths of the TypeScript modules for which documentation should be generated.
+
+### outDir
+
+- **Type**: `string`
+- **Default**: `api`
+
+Customizes the documentation output directory. Provide a relative path, such as `api/custom`.
+
+### setup
+
+- **Type**: `(app: Application) => Promise<Application> | Promise<void> | void`
+- **Default**: `() => {}`
+
+A function for setting up the TypeDoc application. Use it to customize TypeDoc configuration before documentation is generated.

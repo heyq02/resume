@@ -1,0 +1,269 @@
+# @rspress/plugin-playground <SourceCode href="https://github.com/web-infra-dev/rspress/tree/main/packages/plugin-playground" />
+
+import { SourceCode, PackageManagerTabs } from '@rspress/core/theme';
+
+Provides a live editable playground for previewing components in MDX code blocks.
+
+:::tip
+Use this plugin alongside [@rspress/plugin-preview](./preview). Unlike `plugin-preview`, `plugin-playground` compiles code in the browser, so it has more limitations. For example, it cannot import modules from local files. Use `plugin-playground` as a supplement to `plugin-preview` when live code editing is required.
+:::
+
+## Installation
+
+<PackageManagerTabs command="add @rspress/plugin-playground -D" />
+
+## Usage
+
+### 1. Register the plugin
+
+First, write the following config in the config file:
+
+```ts title="rspress.config.ts" twoslash
+import { defineConfig } from '@rspress/core';
+import { pluginPlayground } from '@rspress/plugin-playground';
+
+export default defineConfig({
+  plugins: [pluginPlayground()],
+});
+```
+
+### 2. Use in MDX files
+
+Use the ` ```tsx playground ` syntax in MDX files:
+
+````mdx title="example.mdx"
+```tsx playground
+import { useState } from 'react';
+
+function App() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div style={{ textAlign: 'center' }}>
+      <p>Current count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>+</button>
+      <button onClick={() => setCount(count - 1)}>-</button>
+    </div>
+  );
+}
+
+export default App;
+```
+````
+
+It renders as follows:
+
+```tsx playground
+import { useState } from 'react';
+
+function App() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div style={{ textAlign: 'center' }}>
+      <p>Current count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>+</button>
+      <button onClick={() => setCount(count - 1)}>-</button>
+    </div>
+  );
+}
+
+export default App;
+```
+
+:::tip
+
+1. It currently works only in `.mdx` files.
+2. Export the component as default; Rspress renders it automatically.
+3. Type checking is currently not performed for TSX.
+
+:::
+
+### 3. Write component code in other files (optional)
+
+In addition to writing component code in the code block of the mdx file, you can also use it with [File Code Block](../../guide/use-mdx/code-blocks.mdx#file-code-block) to write the example code in other files.
+
+````mdx title="example.mdx"
+```tsx file="./_playgroundDemo.jsx" playground
+
+```
+````
+
+```tsx title="_playgroundDemo.jsx" file="./_playgroundDemo.jsx"
+
+```
+
+It renders as follows:
+
+```tsx file="./_playgroundDemo.jsx" playground
+
+```
+
+## Adjusting layout direction \{#direction}
+
+You can use the `direction` parameter to specify the layout direction of the editor and preview area. It supports `horizontal` or `vertical`.
+
+### `direction="horizontal"`
+
+Horizontal layout is the default mode, with the editor and preview area arranged side by side.
+
+Syntax:
+
+````mdx title="example.mdx"
+```tsx playground direction=horizontal
+
+```
+````
+
+### `direction="vertical"`
+
+Vertical layout mode, with the editor and preview area arranged top to bottom.
+
+Syntax:
+
+````mdx title="example.mdx"
+```tsx playground direction=vertical
+
+```
+````
+
+Rendering result:
+
+```tsx playground direction=vertical
+import { useState } from 'react';
+
+function App() {
+  const [text, setText] = useState('Hello');
+
+  return (
+    <div>
+      <input value={text} onChange={e => setText(e.target.value)} />
+      <p>You entered: {text}</p>
+    </div>
+  );
+}
+
+export default App;
+```
+
+### Define the layout of the entire page
+
+You can write `playgroundDirection` in frontmatter to define the layout of the editor and preview area for the entire page.
+
+```md title="example.mdx"
+---
+title: Title
+playgroundDirection: vertical
+---
+```
+
+Priority: Defined directly on the code block > Page frontmatter definition > Plugin configuration.
+
+## Options
+
+This plugin accepts a configuration object with the following type definition:
+
+```ts
+interface PlaygroundOptions {
+  defaultRenderMode?: 'pure' | 'playground';
+  defaultDirection?: 'horizontal' | 'vertical';
+  editorPosition?: 'left' | 'right';
+  babelUrl?: string;
+  monacoLoader?: Parameters<typeof loader.config>[0];
+  monacoOptions?: MonacoEditorProps['options'];
+  include?: Array<string | [string, string]>;
+  render?: string;
+}
+```
+
+### defaultRenderMode
+
+- **Type:** `'pure' | 'playground'`
+- **Default:** `'pure'`
+
+Configures the default rendering behavior for code blocks that don't explicitly declare `pure` or `playground`.
+
+- ` ```tsx pure`: Render as a regular code block
+- ` ```tsx `: Render based on `defaultRenderMode` configuration
+- ` ```tsx playground`: Render as an editable Playground component
+
+:::warning
+It is not recommended to modify the default value, as it may affect the combined usage with `@rspress/plugin-preview`.
+:::
+
+### defaultDirection
+
+- **Type:** `'horizontal' | 'vertical'`
+- **Default:** `'horizontal'`
+
+Configures the default [layout direction](#direction) of the editor and preview area.
+
+### editorPosition
+
+- **Type:** `'left' | 'right'`
+- **Default:** `'left'`
+
+Configures the position of the editor in horizontal layout (left/right).
+
+### babelUrl
+
+- **Type:** `string`
+- **Default:** `'https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.22.20/babel.min.js'`
+
+Playground uses `@babel/standalone` to compile demo code. You can modify it to a URL provided by other CDNs, such as unpkg, jsdelivr, etc.
+
+### monacoLoader
+
+Configures monaco-loader behaviors. Loaded from [cdnjs.com](https://cdnjs.com/libraries/monaco-editor) by default.
+
+You can modify it to a URL provided by other CDNs, such as unpkg, jsdelivr, etc.
+
+The full documentation can be found at [suren-atoyan/monaco-loader](https://github.com/suren-atoyan/monaco-loader#config)
+
+### monacoOptions
+
+- **Type:** [IStandaloneEditorConstructionOptions](https://microsoft.github.io/monaco-editor/typedoc/interfaces/editor_editor_api.editor.IStandaloneEditorConstructionOptions.html)
+
+Configures Monaco Editor options.
+
+:::warning Note
+`monacoLoader` and `monacoOptions` will be serialized to JSON, so some data types, such as functions and circularly referenced objects, are not supported.
+:::
+
+### include
+
+- **Type:** `Array<string | [string, string]>`
+
+By default, this plugin will automatically scan all import statements in demos; packages not used in demos cannot be used in the Playground. If you want to add other packages to the Playground, you can use the `include` parameter:
+
+```ts
+pluginPlayground({
+  include: [
+    // Add dayjs package
+    'dayjs',
+    // Add a package named "my-package", actually pointing to "/path/to/package/index.js"
+    ['my-package', '/path/to/package/index.js'],
+  ],
+});
+```
+
+### render
+
+- **Type:** `string`
+
+You can customize the render file for rendering Playground. Please note that the file name must be `Playground.(jsx?|tsx?)`.
+
+```ts
+pluginPlayground({
+  render: '/path/to/render/Playground.tsx',
+});
+```
+
+In the custom Playground, you can directly import the original editor and renderer, and import pre-packaged dependencies through `_rspress_playground_imports`:
+
+```ts
+import getImport from '_rspress_playground_imports';
+import { Runner, Editor } from '@rspress/plugin-playground/web';
+```
+
+You can refer to the built-in [Playground.tsx](https://github.com/web-infra-dev/rspress/blob/main/packages/plugin-playground/static/global-components/Playground.tsx) for customization.

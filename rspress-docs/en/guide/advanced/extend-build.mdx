@@ -1,0 +1,91 @@
+---
+description: Extend build behavior with Rsbuild configuration, Rspack plugins, and custom MDX remark/rehype plugins.
+---
+
+# Build extension
+
+## Rsbuild
+
+Rspress builds docs with [Rsbuild](https://github.com/web-infra-dev/rsbuild).
+
+### Configure Rsbuild
+
+Rsbuild provides a rich set of build options. Customize them through [builderConfig](/api/config/config-build.html#builderconfig). For example, change the output directory to `doc_dist`:
+
+```ts title="rspress.config.ts"
+import { defineConfig } from '@rspress/core';
+
+export default defineConfig({
+  builderConfig: {
+    output: {
+      distPath: {
+        root: 'doc_dist',
+      },
+    },
+  },
+});
+```
+
+Rspress also provides [builderConfig.plugins](/api/config/config-build#builderconfigplugins) for registering Rsbuild plugins. Use Rsbuild's plugin ecosystem to extend build behavior.
+
+For example, add Google Analytics with [rsbuild-plugin-google-analytics](https://github.com/rstackjs/rsbuild-plugin-google-analytics):
+
+```ts title="rspress.config.ts"
+import { defineConfig } from '@rspress/core';
+import { pluginGoogleAnalytics } from 'rsbuild-plugin-google-analytics';
+
+export default defineConfig({
+  builderConfig: {
+    plugins: [
+      pluginGoogleAnalytics({
+        // replace this with your Google tag ID
+        id: 'G-xxxxxxxxxx',
+      }),
+    ],
+  },
+});
+```
+
+:::tip
+Learn more in the [Rsbuild - Config](https://rsbuild.rs/config/) documentation.
+:::
+
+### Configure Rspack
+
+You can configure Rspack through the [tools.rspack](https://rsbuild.rs/config/tools/rspack) option provided by Rsbuild:
+
+```ts title="rspress.config.ts"
+import { defineConfig } from '@rspress/core';
+
+export default defineConfig({
+  builderConfig: {
+    tools: {
+      rspack(options) {
+        // modify the rspack configuration
+      },
+    },
+  },
+});
+```
+
+## MDX compilation
+
+Rspress compiles MDX with [unified](https://github.com/unifiedjs/unified). Add related compilation plugins through the `markdown` configuration. For example:
+
+```ts title="rspress.config.ts"
+import { defineConfig } from '@rspress/core';
+
+export default defineConfig({
+  markdown: {
+    remarkPlugins: [
+      [
+        require('remark-autolink-headings'),
+        {
+          behavior: 'wrap',
+        },
+      ],
+    ],
+    rehypePlugins: [require('rehype-slug')],
+  },
+});
+```
