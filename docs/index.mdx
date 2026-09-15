@@ -7,13 +7,17 @@ outline: false
 footer: false
 ---
 
-import { Badge } from '@rspress/core/theme';
+import { Badge, Tab, Tabs, Steps, SourceCode } from '@rspress/core/theme';
 
 # 贺永琪
 
 **软件开发工程师** · 北京
 
 [heyongqi@example.com](mailto:heyongqi@example.com) · 138-0000-0000 · [GitHub](https://github.com/heyq02)
+
+:::tip 求职状态
+目前在职，开放新机会。对前端架构、全栈开发、开源基础设施方向尤其感兴趣。
+:::
 
 ## 关于我
 
@@ -23,30 +27,72 @@ import { Badge } from '@rspress/core/theme';
 
 ## 技术栈
 
-**编程语言**　<Badge text="JavaScript" type="info" /> <Badge text="TypeScript" type="info" /> <Badge text="Python" type="info" /> <Badge text="Go" type="info" /> <Badge text="SQL" type="info" />
+<Tabs>
+<Tab label="编程语言">
 
-**前端框架**　<Badge text="React" type="tip" /> <Badge text="Vue 3" type="tip" /> <Badge text="Next.js" type="tip" /> <Badge text="Rspress" type="tip" /> <Badge text="Tailwind CSS" type="tip" />
+<Badge text="JavaScript" type="info" /> <Badge text="TypeScript" type="info" /> <Badge text="Python" type="info" /> <Badge text="Go" type="info" /> <Badge text="SQL" type="info" />
 
-**后端 & 数据库**　<Badge text="Node.js" type="warning" /> <Badge text="Express" type="warning" /> <Badge text="NestJS" type="warning" /> <Badge text="PostgreSQL" type="warning" /> <Badge text="Redis" type="warning" /> <Badge text="MongoDB" type="warning" />
+- **主力语言**：JavaScript / TypeScript，日常开发首选，5 年深度使用
+- **后端/脚本**：Python 用于数据处理与自动化脚本，Go 用于高性能服务
+- **查询语言**：SQL 熟练掌握复杂查询与性能调优
 
-**工具 & 平台**　<Badge text="Git" type="danger" /> <Badge text="Docker" type="danger" /> <Badge text="Kubernetes" type="danger" /> <Badge text="AWS" type="danger" /> <Badge text="CI/CD" type="danger" /> <Badge text="Webpack" type="danger" /> <Badge text="Vite" type="danger" />
+</Tab>
+<Tab label="前端框架">
+
+<Badge text="React" type="tip" /> <Badge text="Vue 3" type="tip" /> <Badge text="Next.js" type="tip" /> <Badge text="Rspress" type="tip" /> <Badge text="Tailwind CSS" type="tip" />
+
+- **React 生态**：Hooks、Redux/Zustand、React Query，组件库设计与维护
+- **Vue 生态**：Composition API、Pinia、Vite 全链路开发
+- **SSR/SSG**：Next.js 服务端渲染，Rspress 静态站点生成
+
+</Tab>
+<Tab label="后端 & 数据库">
+
+<Badge text="Node.js" type="warning" /> <Badge text="Express" type="warning" /> <Badge text="NestJS" type="warning" /> <Badge text="PostgreSQL" type="warning" /> <Badge text="Redis" type="warning" /> <Badge text="MongoDB" type="warning" />
+
+- **Node.js**：Express / NestJS 构建 RESTful API 与微服务
+- **关系型**：PostgreSQL 复杂查询、索引优化、数据库迁移
+- **缓存/NoSQL**：Redis 缓存策略设计，MongoDB 文档存储
+
+</Tab>
+<Tab label="工具 & 平台">
+
+<Badge text="Git" type="danger" /> <Badge text="Docker" type="danger" /> <Badge text="Kubernetes" type="danger" /> <Badge text="AWS" type="danger" /> <Badge text="CI/CD" type="danger" /> <Badge text="Webpack" type="danger" /> <Badge text="Vite" type="danger" />
+
+- **容器化**：Docker 多阶段构建，Kubernetes 集群编排与滚动更新
+- **云服务**：AWS EC2/S3/Lambda/RDS，成本优化与架构设计
+- **工程化**：Webpack/Vite 构建优化，GitHub Actions CI/CD 流水线
+
+</Tab>
+</Tabs>
 
 ---
 
 ## 工作经历
 
-### 某科技有限公司 · 高级前端工程师
+### 某科技有限公司 · 高级前端工程师 <Badge text="2022.06 - 至今" type="info" />
 
-<Badge text="2022.06 - 至今" />
+<Steps>
 
-- 主导电商平台前端架构升级，从 jQuery 迁移至 React + TypeScript，页面加载速度提升 **60%**
-- 设计并实现组件库，覆盖 50+ 业务组件，被 3 个产品线复用，开发效率提升 **40%**
-- 搭建前端监控体系，接入性能埋点与异常上报，线上问题发现时间从小时级降至**分钟级**
-- 指导 4 名初级工程师，建立代码审查规范，团队代码质量评分提升 **35%**
+#### 架构升级
 
-### 某互联网公司 · 全栈开发工程师
+主导电商平台前端架构升级，从 jQuery 单体迁移至 **React + TypeScript** 微前端架构，页面加载速度提升 **60%**，首屏 LCP 从 3.2s 降至 1.3s
 
-<Badge text="2020.07 - 2022.05" />
+#### 组件库建设
+
+设计并实现企业级组件库，覆盖 **50+** 业务组件，被 3 个产品线复用，团队开发效率提升 **40%**
+
+#### 监控体系搭建
+
+搭建前端监控体系，接入性能埋点（Web Vitals）与异常上报（Sentry），线上问题发现时间从小时级降至 **分钟级**
+
+#### 团队建设
+
+指导 4 名初级工程师，建立 Code Review 规范与技术分享机制，团队代码质量评分提升 **35%**
+
+</Steps>
+
+### 某互联网公司 · 全栈开发工程师 <Badge text="2020.07 - 2022.05" type="info" />
 
 - 负责内部管理系统开发，基于 Vue 3 + Node.js，服务 **500+** 内部用户日常办公
 - 实现数据可视化大屏，使用 ECharts + WebSocket 实时展示业务指标，支撑管理层决策
@@ -56,31 +102,41 @@ import { Badge } from '@rspress/core/theme';
 
 ## 项目经历
 
-### [开源组件库 UIKit](https://github.com/heyq02/uikit)
+### 开源组件库 UIKit
 
-<Badge text="React" type="tip" /> <Badge text="TypeScript" type="tip" /> <Badge text="Storybook" type="tip" /> <Badge text="Rollup" type="tip" />
+<Badge text="React" type="tip" /> <Badge text="TypeScript" type="tip" /> <Badge text="Storybook" type="tip" /> <Badge text="Rollup" type="tip" /> <SourceCode href="https://github.com/heyq02/uikit" />
 
-面向中后台场景的 React 组件库，包含表格、表单、图表等 30+ 组件，支持主题定制与国际化。GitHub 800+ Star。
+面向中后台场景的 React 组件库，包含表格、表单、图表等 **30+** 组件，支持主题定制与国际化。
 
-### [智能日程助手](https://github.com/heyq02/scheduler)
+:::info 项目亮点
+GitHub **800+** Star · npm 周下载量 **2000+** · 覆盖 3 条业务线
+:::
 
-<Badge text="Next.js" type="tip" /> <Badge text="OpenAI API" type="tip" /> <Badge text="PostgreSQL" type="tip" /> <Badge text="Vercel" type="tip" />
+### 智能日程助手
 
-基于 AI 的日程管理工具，支持自然语言创建事件、智能冲突检测与日程推荐。月活用户 2000+。
+<Badge text="Next.js" type="tip" /> <Badge text="OpenAI API" type="tip" /> <Badge text="PostgreSQL" type="tip" /> <Badge text="Vercel" type="tip" /> <SourceCode href="https://github.com/heyq02/scheduler" />
 
-### [实时协作白板](https://github.com/heyq02/whiteboard)
+基于 AI 的日程管理工具，支持自然语言创建事件、智能冲突检测与日程推荐。
 
-<Badge text="Vue 3" type="tip" /> <Badge text="WebSocket" type="tip" /> <Badge text="Canvas API" type="tip" /> <Badge text="Docker" type="tip" />
+:::info 项目亮点
+月活用户 **2000+** · 自然语言识别准确率 **95%** · Vercel Edge 部署，全球延迟 < 100ms
+:::
 
-支持多人实时协作的在线白板工具，实现画笔、图形、文字等功能，延迟控制在 50ms 以内。
+### 实时协作白板
+
+<Badge text="Vue 3" type="tip" /> <Badge text="WebSocket" type="tip" /> <Badge text="Canvas API" type="tip" /> <Badge text="Docker" type="tip" /> <SourceCode href="https://github.com/heyq02/whiteboard" />
+
+支持多人实时协作的在线白板工具，实现画笔、图形、文字等功能。
+
+:::info 项目亮点
+支持 **100+** 并发用户 · 操作同步延迟 < **50ms** · CRDT 冲突解决
+:::
 
 ---
 
 ## 教育背景
 
-### 北京理工大学 · 本科
-
-<Badge text="2016.09 - 2020.06" />
+### 北京理工大学 · 本科 <Badge text="2016.09 - 2020.06" type="info" />
 
 计算机科学与技术
 
