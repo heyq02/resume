@@ -5,24 +5,12 @@ export default defineConfig({
   root: path.join(__dirname, 'docs'),
   base: '/resume/',
   siteOrigin: 'https://heyq02.github.io',
-  title: 'My Site',
-  description: '',
+  title: '贺永琪 - 简历',
+  description: '贺永琪的个人简历 - 软件开发工程师',
   icon: '/rspress-icon.png',
   lang: 'zh',
-  logo: {
-    light: '/rspress-light-logo.png',
-    dark: '/rspress-dark-logo.png',
-  },
-  llms: true,
   themeConfig: {
-    socialLinks: [
-      {
-        icon: 'github',
-        mode: 'link',
-        content: 'https://github.com/web-infra-dev/rspress',
-      },
-    ],
     enableContentAnimation: true,
-    enableAppearanceAnimation: true
+    enableAppearanceAnimation: true,
   },
 });
