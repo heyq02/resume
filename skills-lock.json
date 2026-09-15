@@ -127,6 +127,12 @@
       "skillPath": "skills/rspress-best-practices/SKILL.md",
       "computedHash": "6aa7f74c6f1d0ae1f000d412c068a17023269192a056c84f8ffcae561c2e2a12"
     },
+    "rspress-custom-theme": {
+      "source": "rstackjs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/rspress-custom-theme/SKILL.md",
+      "computedHash": "9efebf0ef0da8d388d182fabd8e2b0ef05b385f5ee53de71912e7ebc7fbacda0"
+    },
     "rspress-description-generator": {
       "source": "rstackjs/agent-skills",
       "sourceType": "github",
