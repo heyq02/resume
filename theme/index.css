@@ -1,20 +1,8 @@
-:root {
-  --rp-c-brand: #2563eb;
-  --rp-c-brand-light: #3b82f6;
-  --rp-c-brand-lighter: #93c5fd;
-  --rp-c-brand-dark: #1d4ed8;
-  --rp-c-brand-darker: #1e40af;
-  --rp-c-brand-tint: rgba(37, 99, 235, 0.12);
-}
-
-/* Page layout */
+/* Layout */
 .resume-page {
   max-width: 860px;
   margin: 0 auto;
   padding: 40px 24px 60px;
-  font-family: var(--rp-font-family-base);
-  color: var(--rp-c-text-1);
-  line-height: 1.6;
 }
 
 .resume-container {
@@ -30,7 +18,7 @@
   gap: 28px;
   padding: 32px;
   background: var(--rp-c-bg-soft);
-  border: 1px solid var(--rp-c-divider);
+  border: 1px solid var(--rp-c-divider-light);
   border-radius: var(--rp-radius);
   box-shadow: var(--rp-shadow-1);
 }
@@ -115,7 +103,7 @@ a.contact-item:hover {
 /* Cards */
 .card {
   background: var(--rp-c-bg-soft);
-  border: 1px solid var(--rp-c-divider);
+  border: 1px solid var(--rp-c-divider-light);
   border-radius: var(--rp-radius);
   padding: 24px;
   box-shadow: var(--rp-shadow-1);
@@ -169,10 +157,10 @@ a.contact-item:hover {
 
 .skill-tag:hover {
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px var(--rp-c-brand-tint);
+  box-shadow: var(--rp-shadow-1);
 }
 
-/* Timeline / Experience */
+/* Timeline */
 .timeline {
   display: flex;
   flex-direction: column;
@@ -320,7 +308,6 @@ a.contact-item:hover {
 /* Footer */
 .resume-footer {
   text-align: center;
-  padding: 0;
   font-size: 13px;
   color: var(--rp-c-text-3);
 }
@@ -377,7 +364,6 @@ a.contact-item:hover {
   }
 }
 
-/* Print */
 @media print {
   .resume-page {
     padding: 0;
@@ -385,7 +371,7 @@ a.contact-item:hover {
 
   .card {
     box-shadow: none;
-    border: 1px solid #ddd;
+    border: 1px solid var(--rp-c-gray-light-4);
     break-inside: avoid;
   }
 
