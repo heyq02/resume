@@ -7,7 +7,7 @@ export default defineConfig({
   siteOrigin: 'https://heyq02.github.io',
   title: '贺永琪 - 简历',
   description: '贺永琪的个人简历 - 软件开发工程师',
-  icon: '/avator.png',
+  icon: '/avator.jpg',
   lang: 'zh',
   themeConfig: {
     socialLinks: [
