@@ -8,10 +8,10 @@ export function BulletList({ items }: BulletListProps) {
   }
 
   return (
-    <ul className="mt-3 list-none space-y-2">
+    <ul className="mt-4 list-none space-y-2">
       {items.map((item) => (
         <li
-          className="border-l-4 border-border pl-3 text-base leading-normal break-words"
+          className="border-l-2 border-border pl-3 text-base leading-normal break-words"
           key={item}
         >
           {item}

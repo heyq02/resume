@@ -105,6 +105,7 @@ test('does not show phone, salary, or invented metrics', () => {
 test('renders classified skills from the data contract', () => {
   render(<App />);
 
+  expect(screen.getByRole('heading', { name: /技能/ })).toBeInTheDocument();
   expect(screen.getByRole('heading', { name: '语言' })).toBeInTheDocument();
   expect(screen.getByText(resume.skills.languages[0])).toBeInTheDocument();
   expect(screen.getByText(resume.skills.frameworks[0])).toBeInTheDocument();

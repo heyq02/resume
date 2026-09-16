@@ -243,7 +243,7 @@ HTML title is set in `rsbuild.config.ts` (`html.title`). Favicon is `public/favi
 ## Additional Notes
 
 - Do not invent resume metrics. Only render what `src/data.json` contains.
-- `DESIGN.md` is the visual contract (black / white / signal yellow, Space Grotesk + JetBrains Mono 700, 4px borders, 6px offset shadow, zero radius). Follow it when changing UI.
+- `DESIGN.md` is the visual contract (black / white / signal yellow, Space Grotesk 400/700 + JetBrains Mono 500/700, 4px card borders, 4px offset shadow, zero radius, short CSS motion). Follow it when changing UI.
 - Rsbuild / Rspack / Rstest docs for agents: https://rsbuild.rs/llms.txt , https://rspack.rs/llms.txt , https://rstest.rs/llms.txt
 - Project skills under `.agents/skills/` (Rsbuild, Rstest, Tailwind, resume optimizer, web guidelines) are optional helpers; they do not override the runtime/pnpm constraints above.
 

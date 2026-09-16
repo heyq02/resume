@@ -12,14 +12,15 @@ export function SectionHeading({
   english,
 }: SectionHeadingProps) {
   return (
-    <h2 className="mb-4 flex flex-wrap items-stretch scroll-mt-6" id={id}>
-      <span className="bg-accent px-3 py-2 font-mono text-sm font-bold text-accent-foreground">
+    <h2
+      className="mb-6 flex flex-wrap items-baseline gap-x-3 gap-y-2 border-b-2 border-border pb-3 scroll-mt-6"
+      id={id}
+    >
+      <span className="bg-accent px-2 py-1 font-mono text-xs font-bold text-accent-foreground">
         {index}
       </span>
-      <span className="bg-primary px-4 py-2 text-lg font-bold text-primary-foreground">
-        {title}
-      </span>
-      <span className="border-4 border-border px-3 py-2 font-mono text-xs font-bold uppercase tracking-widest">
+      <span className="text-2xl font-bold">{title}</span>
+      <span className="font-mono text-xs font-medium tracking-widest uppercase">
         {english}
       </span>
     </h2>
