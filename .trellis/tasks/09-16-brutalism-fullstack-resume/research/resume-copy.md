@@ -1,0 +1,66 @@
+# Optimized resume copy (PDF facts only)
+
+Use this as the `data.json` payload. Do not add employers, degrees, or numeric scale that is not listed here.
+
+## Profile
+
+- name: 贺永琪
+- title: 前端开发工程师
+- email: mail@heyq02.cn
+- github: https://github.com/heyq02
+- blog: http://heyq02.cn
+- summary: 南京邮电大学生物医学工程本科，2024 校招加入京东担任前端开发。负责外卖商家中心财务模块，并参与秒送门跨端小程序、营销 H5 与中后台。熟练使用 JavaScript / TypeScript、Vue / React / Taro，以及 Webpack / Vite / Rspack 工程化。持续输出技术博客 100+ 篇，累计阅读 21w+。
+
+## Skills
+
+- languages: JavaScript, TypeScript, HTML, CSS, Rust（基础）
+- frameworks: Vue, React, Taro
+- engineering: Webpack, Vite, Rspack（配置与插件）, Node.js 原生插件（了解）
+- tools: Git, CI/CD, Lint, Figma, 抓包调试
+- infra: Linux, Docker, Vim, Nginx（基础）
+
+## Experience
+
+### 北京京东世纪贸易有限公司 · 软件开发工程师（前端） · 2024.06–至今
+
+- 负责外卖商家中心财务系统前端：承接需求、功能迭代、线上问题与报表性能优化，保障财务流程可交付（Vue）。
+- 用楼层化、模块化拆分财务页面，统一组件开发标准，降低旧项目冗余与耦合，便于后续迭代。
+- 针对报表、账单、筛选等复用场景扩展公共组件，减少重复搭页成本。
+- 修复多分辨率与多浏览器样式差异，统一后台展示。
+- 接入第三方监控 SDK，上报页面异常、接口报错与关键行为，便于线上追溯。
+- 通过接口预加载、离线缓存与 CDN 静态资源优化缓解报表白屏与卡顿（不写未提供的耗时数字）。
+- 参与消费者端秒送门跨端小程序迭代与页面细节优化，用 Taro 处理多端适配。
+- 使用 React 开发营销活动 H5，优化加载与交互，加快活动页交付。
+- 参与 Vue 后台管理系统与聚合中心，维护运费计算、互动游戏、数据看板等模块。
+- 参与代码评审并落地编码规范，从打包、渲染与组件复用方向做性能优化。
+
+### 江苏群杰物联科技有限公司 · 前端开发工程师 · 2023.07–2024.02
+
+- 从零搭建并迭代政务版小程序前端，用 Vue 实现动态交互。
+- 维护后台管理系统，修复缺陷并做响应与处理效率方面的优化。
+- 与后端对齐数据交互，编写规范代码与技术文档。
+
+### 江苏汇鑫融智软件科技有限公司 · 前端开发工程师 · 2023.02–2023.07
+
+- 基于公司低代码平台二次开发后台管理页面。
+
+## Projects
+
+### 外卖商家中心 · 财务模块负责人 · 2024.07–至今
+
+- 主导财务前端结构规范化：楼层化拆分、公共组件沉淀、多设备适配、监控埋点、报表加载优化（手段见上，无虚构指标）。
+
+### 商品榜单 · 项目开发人员 · 2024.06–2024.07
+
+- 按团队规范模块化开发楼层组件；用 Taro 原生 API 处理多端适配；按设计稿还原；接入第三方埋点 SDK；用预加载、离线缓存与 CDN 优化加载。
+
+## Education
+
+- 南京邮电大学 · 本科 · 生物医学工程 · 2020–2024
+- 资格证书: 大学英语四级
+
+## Explicitly omitted
+
+- 手机号、期望薪资、期望城市
+- Vue/Vite 具体 PR 链接（无公开 URL）
+- 任何 DAU / GMV / ms / 百分比业务指标
