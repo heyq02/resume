@@ -2,50 +2,82 @@
 
 > Type safety patterns in this project.
 
----
-
 ## Overview
 
-<!--
-Document your project's type safety conventions here.
-
-Questions to answer:
-- What type system do you use?
-- How are types organized?
-- What validation library do you use?
-- How do you handle type inference?
--->
-
-(To be filled by the team)
-
----
+TypeScript with `verbatimModuleSyntax`. Resume data is a typed JSON module, not a runtime schema library.
 
 ## Type Organization
 
-<!-- Where types are defined, shared types vs local types -->
+- Shared resume contract: `src/types.ts`
+- Assign the JSON import once: `const data: Resume = resume`
+- Component props are slices of that contract (`HeroProps`, `Experience[]`)
 
-(To be filled by the team)
+## Scenario: Resume JSON → UI
 
----
+### 1. Scope / Trigger
 
-## Validation
+Content changes must not require hunting string copies in components. The JSON file is the only payload.
 
-<!-- Runtime validation patterns (Zod, Yup, io-ts, etc.) -->
+### 2. Signatures
 
-(To be filled by the team)
+```ts
+export type Resume = {
+  name: string;
+  title: string;
+  email: string;
+  github: string;
+  blog: string;
+  summary: string;
+  skills: SkillGroups;
+  experiences: Experience[];
+  projects: Project[];
+  education: Education;
+};
+```
 
----
+`src/data.json` must be assignable to `Resume`.
 
-## Common Patterns
+### 3. Contracts
 
-<!-- Type utilities, generics, type guards -->
+Required public fields: `name`, `title`, `email`, `github`, `blog`, `summary`.
+Forbidden keys: `phone`, `salary`, `mobile`, and invented scale metrics (DAU/GMV/ms).
 
-(To be filled by the team)
+### 4. Validation & Error Matrix
 
----
+| Condition | Result |
+| --- | --- |
+| JSON missing a `Resume` field | `tsc` / assignment error |
+| UI hardcodes copy instead of props | Drift vs `data.json`; tests fail when JSON changes |
+| Phone/salary present | Product violation; `does not show phone, salary` test fails |
+
+### 5. Good / Base / Bad
+
+- Good: `const data: Resume = resume` then `<Hero name={data.name} />`
+- Base: empty arrays are allowed only where the type is `string[]` (certificates, bullets)
+- Bad: `as Resume` to silence extra keys, or duplicating bullets in JSX
+
+### 6. Tests Required
+
+- Render `App` and assert `resume.name`, employers, education, mailto/github/blog hrefs
+- Assert JSON string has no `phone` / `salary` / `mobile`
+
+### 7. Wrong vs Correct
+
+#### Wrong
+
+```tsx
+<h1>贺永琪</h1>
+```
+
+#### Correct
+
+```tsx
+const data: Resume = resume;
+<h1>{data.name}</h1>
+```
 
 ## Forbidden Patterns
 
-<!-- any, type assertions, etc. -->
-
-(To be filled by the team)
+- `any` on resume data
+- Type assertions to hide JSON/shape mismatch
+- Dynamic Tailwind tokens (`bg-${color}`) — also a bundler issue

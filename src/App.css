@@ -1,28 +1,84 @@
-@import 'tailwindcss';
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&family=Space+Grotesk:wght@700&display=swap");
+@import "tailwindcss";
 
-body {
-  margin: 0;
-  color: #fff;
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  background-image: linear-gradient(to bottom, #020917, #101725);
+@theme {
+  --color-background: #ffffff;
+  --color-foreground: #000000;
+  --color-primary: #000000;
+  --color-primary-foreground: #ffff00;
+  --color-accent: #ffff00;
+  --color-accent-foreground: #000000;
+  --color-border: #000000;
+  --color-card: #ffffff;
+  --color-card-foreground: #000000;
+  --color-ring: #000000;
+  --color-ring-offset: #ffffff;
+  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-2xl: 0;
+  --radius-3xl: 0;
+  --radius-4xl: 0;
+  --shadow-brutal: 6px 6px 0 var(--color-foreground);
 }
 
-.content {
-  display: flex;
-  min-height: 100vh;
-  line-height: 1.1;
-  text-align: center;
-  flex-direction: column;
-  justify-content: center;
+@layer base {
+  * {
+    border-color: var(--color-border);
+    border-radius: 0;
+  }
+
+  html {
+    overflow-x: hidden;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-background);
+    background-image:
+      linear-gradient(
+        to right,
+        color-mix(in srgb, var(--color-foreground) 10%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        color-mix(in srgb, var(--color-foreground) 10%, transparent) 1px,
+        transparent 1px
+      );
+    background-size: 24px 24px;
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  a,
+  button {
+    cursor: pointer;
+  }
+
+  :focus-visible {
+    outline: 4px solid var(--color-ring);
+    outline-offset: 2px;
+  }
 }
 
-.content h1 {
-  font-size: 3.6rem;
-  font-weight: 700;
-}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 
-.content p {
-  font-size: 1.2rem;
-  font-weight: 400;
-  opacity: 0.5;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    transition-duration: 0.01ms;
+  }
 }
