@@ -12,7 +12,7 @@ const data: Resume = resume;
 const App = () => {
   return (
     <div
-      className="relative min-h-dvh bg-background pt-[env(safe-area-inset-top)] pr-[env(safe-area-inset-right)] pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] font-sans text-foreground"
+      className="relative z-10 min-h-dvh bg-transparent pt-[env(safe-area-inset-top)] pr-[env(safe-area-inset-right)] pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] font-sans text-foreground"
       lang="zh-CN"
     >
       <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-10">
