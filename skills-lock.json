@@ -13,6 +13,12 @@
       "skillPath": "skills/rstest-best-practices/SKILL.md",
       "computedHash": "2657c33744b26c4d2cde2c238a6ad52e92532f240f345d0f798b3252a729fcbb"
     },
+    "tailwind-design-system": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "skillPath": "plugins/frontend-mobile-development/skills/tailwind-design-system/SKILL.md",
+      "computedHash": "cd61afd28f594e8b6712b61749209cbb4466e3eec4e4223793bbd97fc85c1b63"
+    },
     "tech-resume-optimizer": {
       "source": "paramchoudhary/resumeskills",
       "sourceType": "github",
