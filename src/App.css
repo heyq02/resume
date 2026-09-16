@@ -33,10 +33,17 @@
 
   html {
     overflow-x: hidden;
+    color-scheme: light;
   }
 
   body {
     margin: 0;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: color-mix(
+      in srgb,
+      var(--color-accent) 45%,
+      transparent
+    );
     background-color: var(--color-background);
     background-image:
       linear-gradient(

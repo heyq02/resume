@@ -8,7 +8,7 @@ export function ExternalLink({ href, children }: ExternalLinkProps) {
 
   return (
     <a
-      className="cursor-pointer underline decoration-2 underline-offset-4"
+      className="cursor-pointer underline decoration-2 underline-offset-4 hover:bg-accent"
       href={href}
       rel={isMail ? undefined : 'noopener noreferrer'}
       target={isMail ? undefined : '_blank'}

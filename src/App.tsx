@@ -12,17 +12,17 @@ const data: Resume = resume;
 const App = () => {
   return (
     <div
-      className="min-h-dvh bg-background font-sans text-foreground"
+      className="relative min-h-dvh bg-background pt-[env(safe-area-inset-top)] pr-[env(safe-area-inset-right)] pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] font-sans text-foreground"
       lang="zh-CN"
     >
       <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-10">
         <a
-          className="mb-6 inline-block border-4 border-border bg-accent px-3 py-2 font-mono text-xs font-bold tracking-widest text-accent-foreground uppercase shadow-brutal"
+          className="sr-only focus-visible:not-sr-only focus-visible:absolute focus-visible:top-[max(1rem,env(safe-area-inset-top))] focus-visible:left-[max(1rem,env(safe-area-inset-left))] focus-visible:z-50 focus-visible:inline-block focus-visible:border-4 focus-visible:border-border focus-visible:bg-accent focus-visible:px-3 focus-visible:py-2 focus-visible:font-mono focus-visible:text-xs focus-visible:font-bold focus-visible:tracking-widest focus-visible:text-accent-foreground focus-visible:uppercase focus-visible:shadow-brutal"
           href="#main"
         >
           跳到正文
         </a>
-        <main id="main" tabIndex={-1}>
+        <main className="scroll-mt-6" id="main" tabIndex={-1}>
           <Hero
             blog={data.blog}
             email={data.email}

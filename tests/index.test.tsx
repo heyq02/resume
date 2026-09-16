@@ -1,6 +1,11 @@
 import { expect, test } from '@rstest/core';
 import { render, screen, within } from '@testing-library/react';
 import App from '../src/App';
+import { BulletList } from '../src/components/BulletList';
+import { Education } from '../src/components/Education';
+import { ExperienceList } from '../src/components/ExperienceList';
+import { ProjectList } from '../src/components/ProjectList';
+import { SkillGroups } from '../src/components/SkillGroups';
 import resume from '../src/data.json';
 
 test('renders rewrite resume instead of the Rsbuild starter', () => {
@@ -72,6 +77,7 @@ test('exposes skip link and main landmark', () => {
 
   const skip = screen.getByRole('link', { name: '跳到正文' });
   expect(skip).toHaveAttribute('href', '#main');
+  expect(skip.className.split(/\s+/)).toContain('sr-only');
 
   const main = screen.getByRole('main');
   expect(main).toHaveAttribute('id', 'main');
@@ -105,4 +111,60 @@ test('renders classified skills from the data contract', () => {
   expect(screen.getByText(resume.skills.engineering[0])).toBeInTheDocument();
   expect(screen.getByText(resume.skills.tools[0])).toBeInTheDocument();
   expect(screen.getByText(resume.skills.infra[0])).toBeInTheDocument();
+});
+
+test('omits empty collections instead of rendering hollow chrome', () => {
+  const { container: skills } = render(
+    <SkillGroups
+      skills={{
+        languages: [],
+        frameworks: [],
+        engineering: [],
+        tools: [],
+        infra: [],
+      }}
+    />,
+  );
+  expect(skills).toBeEmptyDOMElement();
+
+  const { container: experiences } = render(
+    <ExperienceList experiences={[]} />,
+  );
+  expect(experiences).toBeEmptyDOMElement();
+
+  const { container: projects } = render(<ProjectList projects={[]} />);
+  expect(projects).toBeEmptyDOMElement();
+
+  const { container: bullets } = render(<BulletList items={[]} />);
+  expect(bullets).toBeEmptyDOMElement();
+
+  render(
+    <Education
+      education={{
+        school: '测试学校',
+        degree: '本科',
+        major: '测试专业',
+        start: '2020',
+        end: '2024',
+        certificates: [],
+      }}
+    />,
+  );
+  expect(screen.queryByText('资格证书')).not.toBeInTheDocument();
+
+  render(
+    <SkillGroups
+      skills={{
+        languages: ['TypeScript'],
+        frameworks: [],
+        engineering: [],
+        tools: [],
+        infra: [],
+      }}
+    />,
+  );
+  expect(screen.getByText('TypeScript')).toBeInTheDocument();
+  expect(
+    screen.queryByRole('heading', { name: '框架' }),
+  ).not.toBeInTheDocument();
 });

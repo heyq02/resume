@@ -12,7 +12,7 @@ export function SectionHeading({
   english,
 }: SectionHeadingProps) {
   return (
-    <h2 className="mb-4 flex flex-wrap items-stretch" id={id}>
+    <h2 className="mb-4 flex flex-wrap items-stretch scroll-mt-6" id={id}>
       <span className="bg-accent px-3 py-2 font-mono text-sm font-bold text-accent-foreground">
         {index}
       </span>

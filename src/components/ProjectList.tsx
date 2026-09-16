@@ -7,6 +7,10 @@ type ProjectListProps = {
 };
 
 export function ProjectList({ projects }: ProjectListProps) {
+  if (projects.length === 0) {
+    return null;
+  }
+
   return (
     <section className="mb-10" aria-labelledby="projects-heading">
       <SectionHeading
@@ -22,8 +26,8 @@ export function ProjectList({ projects }: ProjectListProps) {
             key={project.name}
           >
             <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-              <h3 className="text-xl">{project.name}</h3>
-              <p className="font-mono text-xs font-bold tracking-widest uppercase">
+              <h3 className="min-w-0 text-xl break-words">{project.name}</h3>
+              <p className="font-mono text-xs font-bold tracking-widest uppercase tabular-nums">
                 {project.start}–{project.end}
               </p>
             </div>

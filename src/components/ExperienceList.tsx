@@ -7,6 +7,10 @@ type ExperienceListProps = {
 };
 
 export function ExperienceList({ experiences }: ExperienceListProps) {
+  if (experiences.length === 0) {
+    return null;
+  }
+
   return (
     <section className="mb-10" aria-labelledby="experience-heading">
       <SectionHeading
@@ -22,8 +26,10 @@ export function ExperienceList({ experiences }: ExperienceListProps) {
             key={`${experience.company}-${experience.start}`}
           >
             <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-              <h3 className="text-xl">{experience.company}</h3>
-              <p className="font-mono text-xs font-bold tracking-widest uppercase">
+              <h3 className="min-w-0 text-xl break-words">
+                {experience.company}
+              </h3>
+              <p className="font-mono text-xs font-bold tracking-widest uppercase tabular-nums">
                 {experience.start}–{experience.end}
               </p>
             </div>
