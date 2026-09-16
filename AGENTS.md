@@ -1,6 +1,32 @@
 # AGENTS.md
 
-This is a Node.js project. Package manager is pinned in root `package.json`: `packageManager` is `pnpm@11.23.0`; `devEngines.packageManager` is pnpm `11.23.0` with `onFail: "download"`.
+Agent-facing working notes for this repository. Human-facing product docs live in `README.md`. Visual tokens and Brutalism rules live in `DESIGN.md`. Layer-scoped coding contracts live in `.trellis/spec/`.
+
+## Project Overview
+
+Static single-page resume for 贺永琪. Chinese copy; English technical tokens stay English. No backend, no CMS, no client store, no network layer.
+
+| Layer | Role |
+| --- | --- |
+| `src/data.json` | Sole resume content source |
+| `src/types.ts` | TypeScript contract for that JSON (`Resume`) |
+| `src/App.tsx` | Skip link + compose sections from typed slices |
+| `src/components/` | Presentational sections (`Hero`, skills, experience, projects, education) |
+| `src/App.css` | Tailwind v4 `@theme` tokens and Brutalism base |
+| `rsbuild.config.ts` | Rsbuild + React + Tailwind; `output.assetPrefix` is `/resume/` |
+| GitHub Actions | Build `dist/` on `master` and publish to GitHub Pages |
+
+Stack: React 19, TypeScript (ESM `"type": "module"`), Rsbuild 2 / Rspack, Tailwind CSS v4, Biome 2, Rstest + Istanbul + Testing Library + happy-dom.
+
+Live site: https://heyq02.github.io/resume/
+
+This is a **single package**. Root `pnpm-workspace.yaml` only pins the npm registry (`https://registry.npmmirror.com/`). Do not treat the repo as a monorepo.
+
+Page assembly order in `src/App.tsx`:
+
+```
+Hero → SkillGroups → ExperienceList → ProjectList → Education
+```
 
 ## Runtime (hard constraint)
 
@@ -8,7 +34,7 @@ Develop and run this repo **only** with the **local nvm Node.js 24.20.0** instal
 
 Pinned version: **v24.20.0**
 
-`.node-version` is `24` (major only). Always pass the patch version explicitly (`nvm use 24.20.0`). Do not rely on `.node-version` to select 24.20.0.
+CI uses Node **24** (major) via `.github/workflows/github-pages.yml`. Local work must still be **24.20.0**. Always pass the patch version explicitly (`nvm use 24.20.0`). Do not rely on a major-only Node selector.
 
 Before any install, lint, typecheck, or app scripts:
 
@@ -87,29 +113,140 @@ Do not run `npm install`, `yarn`, or `bun install`.
 
 Default Homebrew `node` on PATH may be **not** 24. Always activate nvm 24.20.0 in the same shell as pnpm.
 
-## Commands
+Add a dependency with `pnpm add <pkg>` or `pnpm add -D <pkg>` from the repo root. Never introduce a second package manager lockfile.
 
-- `pnpm run dev` - Start the dev server
-- `pnpm run build` - Build the app for production
-- `pnpm run preview` - Preview the production build locally
+## Development Workflow
 
-## Docs
+Always activate Node 24.20.0 in the same shell first (see Runtime).
 
-- Rsbuild: https://rsbuild.rs/llms.txt
-- Rspack: https://rspack.rs/llms.txt
-- Rstest: https://rstest.rs/llms.txt
+- Start the Rsbuild dev server (default http://localhost:3000, HMR on): `pnpm run dev`
+- Production build to `dist/`: `pnpm run build`
+- Serve the production build locally: `pnpm run preview`
+- Lint + format with write-back: `pnpm run check`
+- Format only: `pnpm run format`
 
-## Tools
+There is no `typecheck` script. `tsconfig.json` is `noEmit` for the bundler. `pnpm exec tsc --noEmit` is **not** a CI gate: it currently fails on Testing Library matcher types (`toBeInTheDocument`, etc.) because those are attached at runtime in `tests/rstest.setup.ts`. Use `pnpm run test` for the real quality gate.
 
-### Rstest
+`src/index.html` is the HTML template (`lang="zh-CN"`). Rsbuild 2 has no `html.lang` config — do not try to set language in `rsbuild.config.ts`.
 
-- Run `pnpm run test` to run tests
-- Run `pnpm run test:watch` to run tests in watch mode
+React Compiler is on for `dev` / `build` / `preview`, and **off** for `test` / `test:watch` via `process.env.npm_lifecycle_event` in `rsbuild.config.ts`. Do not enable it during tests; compiler memo branches stay unhit in single-pass tests and collapse Istanbul coverage.
 
-### Biome
+## Testing Instructions
 
-- Run `pnpm run check` to lint your code
-- Run `pnpm run format` to format your code
+Tests live in `tests/`. Setup is `tests/rstest.setup.ts` (jest-dom matchers + `afterEach(cleanup)`). UI tests are in `tests/index.test.tsx`.
+
+```bash
+pnpm run test        # Rstest once, coverage enabled, 90% thresholds
+pnpm run test:watch  # watch mode
+pnpm run test -t "<test name>"   # run one test by name
+```
+
+Coverage (`rstest.config.ts`):
+
+- Provider: Istanbul (`@rstest/coverage-istanbul` must stay at the same version as `@rstest/core`)
+- Include: `src/**/*.ts`, `src/**/*.tsx`
+- Exclude: `src/index.tsx` (bootstrap), `src/types.ts` (types only)
+- Thresholds: statements / functions / branches / lines **≥ 90%**
+- Reporter: `text`
+
+Required test patterns:
+
+- Import `src/data.json` and assert public copy / landmarks from that object — do not duplicate resume strings in tests
+- Skip link `href="#main"` stays **outside** `<main>`; Hero (name, contacts, summary) stays **inside** `<main id="main">`
+- mailto has no `target`; GitHub/blog use `target="_blank"` and `rel="noopener noreferrer"`
+- Empty collections render no hollow chrome (`SkillGroups` / lists / certificates)
+- JSON and rendered text must not include phone, `期望薪资`, `phone` / `salary` / `mobile`, or invented metrics (`DAU`, `GMV`)
+- Starter copy (`Rsbuild with React`) must stay gone
+
+Add or update tests for UI you change. Keep `@rstest/coverage-istanbul` version-locked to `@rstest/core`.
+
+## Code Style
+
+- Language: TypeScript + React function components. Named exports for section components (`export function Hero`). Default export only for `App`.
+- `"verbatimModuleSyntax": true` — type-only imports use `import type`.
+- Biome (`biome.json`): recommended lint, space indent, **single quotes**, `organizeImports` on. Tailwind directives enabled for CSS.
+- `pnpm run check` is `biome check --write` (it mutates files). Biome ignores `.agents` and `.trellis` so skill fixtures are not rewritten.
+- File layout: PascalCase component files matching the export (`Hero.tsx` → `Hero`).
+- Content: edit `src/data.json` and keep it assignable to `Resume` in `src/types.ts`. Map JSON once in `App.tsx` (`const data: Resume = resume`) and pass typed slices. Do not hardcode bullets or identity strings in JSX. Do not `as Resume` to hide extra keys.
+- Dates: `YYYY.MM` or `YYYY`; `end` may be `至今`.
+- Tokens: colors, fonts, radius (all `0`), and `shadow-brutal` live in `src/App.css` `@theme`. Components use semantic classes (`bg-accent`, `border-border`, `shadow-brutal`). No raw hex in components. No dynamic class tokens (`bg-${color}`).
+- Accessibility: skip link, `<main id="main" tabIndex={-1}>`, visible `:focus-visible` (do not use `outline-none` without a replacement), `prefers-reduced-motion` respected in `App.css`.
+- Copy language: Chinese UI chrome (`跳到正文`, section titles); English for tech tokens. Skill chips may use `translate="no"` on Latin tokens.
+- Public contacts only: email, GitHub, blog. Never add phone or salary to `data.json` or the UI.
+- No emoji as icons. No gray type, glass, navy SaaS chrome, or rounded corners.
+- Shared list markup lives in `BulletList`; do not copy a third `<ul>` pattern.
+- Empty arrays are allowed where the type is `string[]`; omit the section chrome instead of rendering empty headings.
+- Keep `src/index.tsx` thin (`createRoot` + `StrictMode` only).
+
+Read `.trellis/spec/frontend/` before changing structure, types, or quality gates (`directory-structure.md`, `type-safety.md`, `quality-guidelines.md`).
+
+## Build and Deployment
+
+```bash
+pnpm run build     # writes static files to dist/
+pnpm run preview   # local preview of dist/
+```
+
+GitHub Pages is a project site at `/resume/`. `rsbuild.config.ts` sets:
+
+```ts
+output: {
+  assetPrefix: '/resume/',
+}
+```
+
+If the repo name changes, update `assetPrefix` to `/<repo>/` (or `/` for a user/org root site). Do not confuse this with Vite `base`; this project uses Rsbuild `output.assetPrefix`.
+
+CI: `.github/workflows/github-pages.yml`
+
+- Triggers: push to `master`, plus `workflow_dispatch`
+- Node 24, global `pnpm@11.23.0`, `pnpm i`, `pnpm run build`
+- Uploads `./dist` and deploys with `actions/deploy-pages`
+- Permissions: `contents: read`, `pages: write`, `id-token: write`
+- Concurrency group `pages` does **not** cancel in-progress runs
+
+Output directory `dist/` is gitignored. Do not commit build artifacts or `coverage/`.
+
+There are no app environment variables and no secrets in this SPA. Public URLs in `data.json` are intentional.
+
+## Pull Request Guidelines
+
+- Title: short description of the user-visible or agent-facing change (example: `Document agent workflow in AGENTS.md`)
+- Before commit, from repo root with Node 24.20.0 / pnpm 11.23.0:
+
+```bash
+pnpm run check
+pnpm run test
+pnpm run build
+```
+
+- Do not commit `.env`, credentials, or generated `dist/` / `coverage/`
+- Do not skip git hooks
+- Prefer updating `data.json` + tests together when copy changes
+- Pages deploy only runs on `master`; a PR does not publish the live site
+
+## Debugging and Troubleshooting
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| Wrong Node / pnpm | Homebrew Node or another nvm version on PATH | `nvm use 24.20.0` then `pnpm -v` must be `11.23.0` |
+| Assets 404 on Pages | `assetPrefix` not `/resume/` | Keep `output.assetPrefix: '/resume/'` |
+| Skip link jumps past name/email | `Hero` rendered outside `<main>` | Keep skip `<a>` before `<main>`; put `Hero` inside it |
+| Coverage on `App` collapses | React Compiler left on during tests | Gate `reactCompiler` off when `npm_lifecycle_event` is `test` or `test:watch` |
+| `pnpm run check` rewrites skill files | Biome includes drifted | Keep `!**/.agents` and `!**/.trellis` in `biome.json` `files.includes` |
+| `tsc --noEmit` matcher errors | jest-dom types not on Rstest `expect` | Ignore for gating; matchers are registered in `tests/rstest.setup.ts`. Do not add a fake `typecheck` script unless those types are wired |
+| JSON / UI drift | Copy duplicated in JSX | Drive UI from `data.json`; tests import that JSON |
+| Type error after editing JSON | Shape no longer matches `Resume` | Update `src/types.ts` or the JSON; do not assert with `as Resume` |
+
+HTML title is set in `rsbuild.config.ts` (`html.title`). Favicon is `public/favicon.png`.
+
+## Additional Notes
+
+- Do not invent resume metrics. Only render what `src/data.json` contains.
+- `DESIGN.md` is the visual contract (black / white / signal yellow, Space Grotesk + JetBrains Mono 700, 4px borders, 6px offset shadow, zero radius). Follow it when changing UI.
+- Rsbuild / Rspack / Rstest docs for agents: https://rsbuild.rs/llms.txt , https://rspack.rs/llms.txt , https://rstest.rs/llms.txt
+- Project skills under `.agents/skills/` (Rsbuild, Rstest, Tailwind, resume optimizer, web guidelines) are optional helpers; they do not override the runtime/pnpm constraints above.
+
 <!-- TRELLIS:START -->
 # Trellis Instructions
 
